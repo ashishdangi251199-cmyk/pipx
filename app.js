@@ -1,21 +1,18 @@
 // ================================
-// PipX Pro - Main App Logic
+// PipX Pro - Master Logic
 // ================================
 
-let editingTradeIndex = null; // Tracks which trade is being edited
+let editingTradeIndex = null;
+let chartInstance = null;
 
 // ---------- PAGE NAVIGATION ----------
 function showPage(pageId) {
-  // Hide all pages
   document.querySelectorAll(".page").forEach(page => page.classList.remove("active"));
-  // Deactivate all nav buttons
   document.querySelectorAll(".nav-btn").forEach(btn => btn.classList.remove("active"));
 
-  // Show selected page
   const selectedPage = document.getElementById(pageId);
   if (selectedPage) selectedPage.classList.add("active");
 
-  // Activate correct nav button
   const buttons = document.querySelectorAll(".nav-btn");
   buttons.forEach(btn => {
     if (btn.getAttribute("onclick")?.includes(pageId)) {
@@ -26,10 +23,7 @@ function showPage(pageId) {
   window.scrollTo({ top: 0, behavior: "smooth" });
 }
 
-
-// ---------- CUSTOM LOT SIZE CALCULATOR ----------
-// Custom Formula: (Risk / SL Pips) / 10
-// e.g., $60 risk, 10 pips sl = (60/10)/10 = 0.60 lots
+// ---------- CUSTOM LOT CALCULATOR ----------
 function calculateCustomLotSize() {
   const risk = parseFloat(document.getElementById("calcRisk").value);
   const slPips = parseFloat(document.getElementById("calcSL").value);
@@ -42,7 +36,6 @@ function calculateCustomLotSize() {
   const lotSize = (risk / slPips) / 10;
   document.getElementById("lotSizeResult").innerText = lotSize.toFixed(2);
 }
-
 
 // ---------- TRADING JOURNAL LOGIC ----------
 let trades = JSON.parse(localStorage.getItem("pipxProTrades")) || [];
@@ -67,12 +60,10 @@ function saveTrade() {
   }
 
   if (editingTradeIndex !== null) {
-    // Edit existing trade
     trades[editingTradeIndex] = trade;
     editingTradeIndex = null;
     alert("Trade updated successfully ✅");
   } else {
-    // Save new trade
     trades.push(trade);
     alert("Trade saved successfully ✅");
   }
@@ -83,12 +74,10 @@ function saveTrade() {
   updateDashboard();
 }
 
-// Fill form with existing data for editing
 function editTrade(index) {
   const trade = trades[index];
   editingTradeIndex = index;
 
-  // Fill form inputs
   document.getElementById("tradeDate").value = trade.date;
   document.getElementById("tradePair").value = trade.pair;
   document.getElementById("direction").value = trade.direction;
@@ -100,12 +89,10 @@ function editTrade(index) {
   document.getElementById("screenshotUrl").value = trade.screenshot || "";
   document.getElementById("notes").value = trade.notes || "";
 
-  // UI Changes for edit mode
   document.getElementById("formTitle").innerText = "✏️ Edit Trade";
   document.getElementById("saveBtn").innerText = "Update Trade";
   document.getElementById("cancelEditBtn").style.display = "block";
 
-  // Scroll to form
   window.scrollTo({ top: 0, behavior: "smooth" });
 }
 
@@ -124,7 +111,6 @@ function deleteTrade(index) {
 }
 
 function resetForm() {
-  // Clear inputs
   document.getElementById("tradeDate").value = "";
   document.getElementById("entryPrice").value = "";
   document.getElementById("setupStrategy").value = "";
@@ -132,26 +118,24 @@ function resetForm() {
   document.getElementById("journalPips").value = "";
   document.getElementById("screenshotUrl").value = "";
   document.getElementById("notes").value = "";
-  // Reset Selects
+  
   document.getElementById("tradePair").selectedIndex = 0;
   document.getElementById("direction").selectedIndex = 0;
   document.getElementById("result").selectedIndex = 0;
 
-  // Reset UI mode
   document.getElementById("formTitle").innerText = "Add New Trade";
   document.getElementById("saveBtn").innerText = "Save Trade";
   document.getElementById("cancelEditBtn").style.display = "none";
 }
 
-// ---------- DISPLAY TRADES (SEARCH & FILTER) ----------
+// ---------- RENDER HISTORY ----------
 function renderTrades() {
   const list = document.getElementById("tradeList");
   list.innerHTML = "";
 
-  const searchText = document.getElementById("searchPair").value.toUpperCase();
-  const filterVal = document.getElementById("filterResult").value;
+  const searchText = document.getElementById("searchPair")?.value.toUpperCase() || "";
+  const filterVal = document.getElementById("filterResult")?.value || "ALL";
 
-  // Apply search and filters
   let filteredTrades = trades.filter((trade) => {
     const matchesSearch = trade.pair.toUpperCase().includes(searchText);
     const matchesFilter = filterVal === "ALL" || trade.result === filterVal;
@@ -159,17 +143,14 @@ function renderTrades() {
   });
 
   if (filteredTrades.length === 0) {
-    list.innerHTML = `<div class="no-trades">No trades found.</div>`;
+    list.innerHTML = `<div class="no-trades">No trades recorded yet.</div>`;
     return;
   }
 
-  // Render cards (newest first)
   [...filteredTrades].reverse().forEach((trade) => {
-    const originalIndex = trades.indexOf(trade); // Required for edit/delete
-    
-    // Set dynamic coloring
+    const originalIndex = trades.indexOf(trade);
     let resultClass = trade.result.toLowerCase();
-    
+
     const card = document.createElement("div");
     card.className = `trade-item ${resultClass}`;
     card.innerHTML = `
@@ -208,19 +189,47 @@ function renderTrades() {
   });
 }
 
-// ---------- DASHBOARD STATS ----------
+// ---------- DASHBOARD STATS & CHART ----------
 function updateDashboard() {
   const totalTrades = trades.length;
   const wins = trades.filter(t => t.result === "WIN").length;
+  const losses = trades.filter(t => t.result === "LOSS").length;
   const totalPips = trades.reduce((sum, t) => sum + Number(t.pips || 0), 0);
-  
   const winRate = totalTrades > 0 ? Math.round((wins / totalTrades) * 100) : 0;
 
-  // UI Updates
   document.getElementById("totalTrades").innerText = totalTrades;
   document.getElementById("winRate").innerText = winRate + "%";
   document.getElementById("totalPips").innerText = totalPips;
-  document.getElementById("netPL").innerText = "$" + totalPips; // Assuming 1 pips = $1 placeholder
+  document.getElementById("netPL").innerText = "$" + totalPips;
+
+  renderChart(wins, losses);
+}
+
+function renderChart(wins, losses) {
+  const ctx = document.getElementById("performanceChart")?.getContext("2d");
+  if (!ctx) return;
+
+  if (chartInstance) {
+    chartInstance.destroy();
+  }
+
+  chartInstance = new Chart(ctx, {
+    type: "doughnut",
+    data: {
+      labels: ["Wins", "Losses"],
+      datasets: [{
+        data: [wins, losses],
+        backgroundColor: ["#00d084", "#ff4d4d"],
+        borderWidth: 0
+      }]
+    },
+    options: {
+      responsive: true,
+      plugins: {
+        legend: { labels: { color: "#ffffff" } }
+      }
+    }
+  });
 }
 
 // ---------- EXPORT CSV ----------
@@ -231,7 +240,6 @@ function exportCSV() {
   csvContent += "Date,Pair,Direction,Setup,EntryPrice,Risk($),Pips,Result,Screenshot,Notes\n";
 
   trades.forEach((t) => {
-    // Sanitize notes for CSV (remove quotes and newlines)
     const sanitizedNotes = (t.notes || '').replace(/"/g, '""').replace(/\n/g, ' ');
     const row = [
       `"${t.date}"`, `"${t.pair}"`, `"${t.direction}"`, `"${t.setup || ''}"`,
@@ -243,16 +251,15 @@ function exportCSV() {
   const encodedUri = encodeURI(csvContent);
   const link = document.createElement("a");
   link.setAttribute("href", encodedUri);
-  link.setAttribute("download", `PipX_Pro_Journal_${new Date().toISOString().slice(0, 10)}.csv`);
+  link.setAttribute("download", `PipX_Trade_Journal_${new Date().toISOString().slice(0, 10)}.csv`);
   document.body.appendChild(link);
   link.click();
   document.body.removeChild(link);
 }
 
-// ---------- INITIALIZE ----------
+// ---------- INIT ----------
 document.addEventListener("DOMContentLoaded", () => {
   renderTrades();
   updateDashboard();
-  calculateCustomLotSize(); // Show default calculation
+  calculateCustomLotSize();
 });
-                          
