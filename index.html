@@ -4,15 +4,17 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta name="theme-color" content="#090909">
-  <title>PipX Pro - Trading Journal & Custom Calculator</title>
+  <title>PipX Pro - Complete Suite</title>
   <link rel="stylesheet" href="style.css">
+  <!-- Chart.js for Interactive Charts -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
 <body>
 
   <!-- HEADER -->
   <header class="top-header">
     <div class="logo">Pip<span>X</span> Pro</div>
-    <div class="subtitle">Journal & Custom Lot Calculator</div>
+    <div class="subtitle">Live Market, Risk Calculator & Smart Journal</div>
   </header>
 
   <main>
@@ -38,11 +40,55 @@
           <strong id="netPL">$0</strong>
         </div>
       </div>
+
+      <!-- PERFORMANCE CHART -->
+      <div class="card chart-box">
+        <h2>📊 Performance Analytics</h2>
+        <canvas id="performanceChart"></canvas>
+      </div>
+    </section>
+
+    <!-- LIVE MARKET -->
+    <section id="market" class="page">
+      <div class="card-header">
+        <h1>📈 Live Market</h1>
+        <span class="live-dot">● LIVE</span>
+      </div>
+
+      <div class="tradingview-widget-container">
+        <div class="tradingview-widget-container__widget"></div>
+        <script type="text/javascript" src="https://s3.tradingview.com/external-embedding/embed-widget-market-quotes.js" async>
+        {
+          "width": "100%",
+          "height": "480",
+          "symbolsGroups": [
+            {
+              "name": "Watchlist",
+              "symbols": [
+                { "name": "TVC:USOIL", "displayName": "USOILSPOT" },
+                { "name": "FX:GBPUSD", "displayName": "GBPUSD" },
+                { "name": "FX:EURUSD", "displayName": "EURUSD" },
+                { "name": "FX:GBPJPY", "displayName": "GBPJPY" },
+                { "name": "FX:AUDUSD", "displayName": "AUDUSD" },
+                { "name": "FX:USDJPY", "displayName": "USDJPY" },
+                { "name": "FX:NZDUSD", "displayName": "NZDUSD" },
+                { "name": "BITSTAMP:BTCUSD", "displayName": "BTCUSD" },
+                { "name": "OANDA:XAUUSD", "displayName": "GOLD" }
+              ]
+            }
+          ],
+          "showSymbolLogo": true,
+          "colorTheme": "dark",
+          "isTransparent": false,
+          "locale": "en"
+        }
+        </script>
+      </div>
     </section>
 
     <!-- CALCULATOR -->
     <section id="calculator" class="page">
-      <h1>🧮 Lot Size Calculator</h1>
+      <h1>🧮 Custom Lot Calculator</h1>
       <div class="calculator-card">
         <div class="input-group">
           <label>Risk Amount ($)</label>
@@ -56,10 +102,10 @@
 
         <div class="result-box">
           <div class="result-item">
-            <p>Calculated Lot Size</p>
-            <strong id="lotSizeResult" class="green">0.00</strong>
+            <p>Your Lot Size</p>
+            <strong id="lotSizeResult" class="green">0.60</strong>
           </div>
-          <p class="formula-info">Formula: (Risk ÷ SL) ÷ 10</p>
+          <p class="formula-info">Formula: (Risk ÷ SL Pips) ÷ 10</p>
         </div>
       </div>
     </section>
@@ -68,7 +114,6 @@
     <section id="journal" class="page">
       <h1>📓 Trading Journal</h1>
 
-      <!-- Journal Entry Form Card -->
       <div class="journal-card form-card">
         <h2 id="formTitle">Add New Trade</h2>
         
@@ -80,7 +125,6 @@
           <div class="input-group">
             <label>Pair</label>
             <select id="tradePair">
-              <!-- Screenshot Watchlist -->
               <option value="USOILSPOT">USOILSPOT (WTI Oil)</option>
               <option value="GBPUSD">GBPUSD</option>
               <option value="EURUSD">EURUSD</option>
@@ -98,8 +142,8 @@
           <div class="input-group">
             <label>Direction</label>
             <select id="direction">
-              <option>BUY</option>
-              <option>SELL</option>
+              <option value="BUY">BUY</option>
+              <option value="SELL">SELL</option>
             </select>
           </div>
           <div class="input-group">
@@ -111,7 +155,7 @@
         <div class="grid-inputs">
           <div class="input-group">
             <label>Entry Price</label>
-            <input id="entryPrice" type="number" step="any" placeholder="1.0850">
+            <input id="entryPrice" type="number" step="any" placeholder="1.3483">
           </div>
           <div class="input-group">
             <label>Risk Amount ($)</label>
@@ -121,27 +165,27 @@
 
         <div class="grid-inputs">
           <div class="input-group">
-            <label>Pips (+/-)</label>
-            <input id="journalPips" type="number" placeholder="20">
+            <label>Pips (+/- Gain/Loss)</label>
+            <input id="journalPips" type="number" placeholder="Auto / Manual e.g. 20">
           </div>
           <div class="input-group">
             <label>Result</label>
             <select id="result">
-              <option>WIN</option>
-              <option>LOSS</option>
-              <option>BREAKEVEN</option>
+              <option value="WIN">WIN</option>
+              <option value="LOSS">LOSS</option>
+              <option value="BREAKEVEN">BREAKEVEN</option>
             </select>
           </div>
         </div>
 
         <div class="input-group">
-          <label>Screenshot / Chart Link</label>
+          <label>Screenshot / Chart Link (URL)</label>
           <input id="screenshotUrl" type="url" placeholder="TradingView link or image URL">
         </div>
 
         <div class="input-group">
-          <label>Notes</label>
-          <textarea id="notes" placeholder="Observations, mistakes, emotions..."></textarea>
+          <label>Notes & Observations</label>
+          <textarea id="notes" placeholder="Trade setup / mistakes / observations..."></textarea>
         </div>
 
         <div class="form-actions btn-group">
@@ -150,26 +194,23 @@
         </div>
       </div>
 
-      <!-- Trade History, Search & Export Section -->
       <div class="history-section">
         <div class="history-header">
-          <h2>📜 History</h2>
+          <h2>📜 Trade History</h2>
           <button class="export-btn" onclick="exportCSV()">📥 Export CSV</button>
         </div>
 
         <div class="filter-box">
           <input id="searchPair" type="text" placeholder="🔍 Search Pair (e.g. GOLD)" oninput="renderTrades()">
           <select id="filterResult" onchange="renderTrades()">
-            <option value="ALL">All</option>
-            <option value="WIN">WIN</option>
-            <option value="LOSS">LOSS</option>
-            <option value="BREAKEVEN">Breakeven</option>
+            <option value="ALL">All Results</option>
+            <option value="WIN">WIN Only</option>
+            <option value="LOSS">LOSS Only</option>
+            <option value="BREAKEVEN">BREAKEVEN Only</option>
           </select>
         </div>
 
-        <div id="tradeList" class="trade-list-container">
-          <!-- Trades will appear here -->
-        </div>
+        <div id="tradeList" class="trade-list-container"></div>
       </div>
     </section>
 
@@ -179,6 +220,9 @@
   <nav class="bottom-nav">
     <button onclick="showPage('dashboard')" class="nav-btn active">
       🏠 <span>Dashboard</span>
+    </button>
+    <button onclick="showPage('market')" class="nav-btn">
+      📈 <span>Market</span>
     </button>
     <button onclick="showPage('calculator')" class="nav-btn">
       🧮 <span>Calculator</span>
