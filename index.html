@@ -160,18 +160,25 @@ async>
 
 <label>Forex Pair</label>
 
-<select id="pair">
-<option>GBPUSD</option>
-<option>EURUSD</option>
-<option>GBPJPY</option>
-<option>AUDUSD</option>
-<option>USDJPY</option>
-<option>NZDUSD</option>
-</select>
+
 
 <label>Entry Price</label>
 <input id="entry" type="number" step="any"
-placeholder="Example 1.34839">
+placeholder="Example<select id="pair">
+
+<option value="GBPUSD">GBPUSD</option>
+<option value="EURUSD">EURUSD</option>
+<option value="GBPJPY">GBPJPY</option>
+<option value="AUDUSD">AUDUSD</option>
+<option value="USDJPY">USDJPY</option>
+<option value="NZDUSD">NZDUSD</option>
+<option value="BTCUSD">BTCUSD</option>
+<option value="XAUUSD">GOLD (XAUUSD)</option>
+<option value="USOILSPOT">US OIL</option>
+
+<option value="CUSTOM">+ Custom Pair</option>
+
+</select> 1.34839">
 
 <label>Stop Loss Price</label>
 <input id="stop" type="number" step="any"
