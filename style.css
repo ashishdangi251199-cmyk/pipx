@@ -5,21 +5,21 @@
 }
 
 body {
-  background: #080808;
+  background: #090909;
   color: #ffffff;
-  font-family: Arial, sans-serif;
+  font-family: Arial, Helvetica, sans-serif;
   padding-bottom: 90px;
 }
 
 .top-header {
   text-align: center;
-  padding: 35px 20px 25px;
+  padding: 25px 20px 15px;
 }
 
 .logo {
-  font-size: 52px;
+  font-size: 42px;
   font-weight: 800;
-  color: #ffd400;
+  color: #ffd700;
 }
 
 .logo span {
@@ -27,13 +27,15 @@ body {
 }
 
 .subtitle {
-  margin-top: 8px;
+  margin-top: 5px;
   color: #888;
-  font-size: 16px;
+  font-size: 14px;
 }
 
 main {
-  padding: 0 18px;
+  padding: 0 16px;
+  max-width: 600px;
+  margin: auto;
 }
 
 .page {
@@ -45,8 +47,21 @@ main {
 }
 
 h1 {
-  font-size: 28px;
+  font-size: 24px;
   margin: 15px 0 20px;
+}
+
+.card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 10px;
+}
+
+.live-dot {
+  color: #00d084;
+  font-size: 12px;
+  font-weight: bold;
 }
 
 .stats-grid {
@@ -55,71 +70,35 @@ h1 {
   gap: 12px;
 }
 
-.stat-card {
-  background: #171717;
+.stat-card,
+.card,
+.trade-item {
+  background: #151515;
   border: 1px solid #292929;
-  border-radius: 18px;
-  padding: 22px 15px;
+  border-radius: 16px;
+  padding: 18px;
+  margin-bottom: 16px;
+}
+
+.stat-card {
   text-align: center;
 }
 
 .stat-card div {
   color: #999;
-  font-size: 14px;
-  margin-bottom: 10px;
+  font-size: 13px;
+  margin-bottom: 8px;
 }
 
 .stat-card strong {
-  color: #ffd400;
-  font-size: 27px;
-}
-
-.market-box,
-.calculator-card,
-.journal-card,
-.analytics-card {
-  background: #151515;
-  border: 1px solid #292929;
-  border-radius: 18px;
-  padding: 18px;
-}
-
-.market-header {
-  display: flex;
-  justify-content: space-between;
-  margin-bottom: 10px;
-  font-weight: bold;
-}
-
-.live-dot {
-  color: #00d084;
-  font-size: 13px;
-}
-
-.market-row {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 18px 5px;
-  border-bottom: 1px solid #292929;
-}
-
-.market-row:last-child {
-  border-bottom: none;
-}
-
-.market-row span {
-  font-weight: bold;
-}
-
-.market-row strong {
-  color: #ffd400;
+  color: #ffd700;
+  font-size: 24px;
 }
 
 label {
   display: block;
   color: #aaa;
-  margin: 14px 0 7px;
+  margin: 12px 0 6px;
   font-size: 14px;
 }
 
@@ -127,96 +106,103 @@ input,
 select,
 textarea {
   width: 100%;
-  background: #0d0d0d;
+  background: #222;
   color: #fff;
-  border: 1px solid #333;
+  border: 1px solid #383838;
   border-radius: 10px;
   padding: 13px;
   font-size: 15px;
   outline: none;
 }
 
+input:focus,
+select:focus,
+textarea:focus {
+  border-color: #ffd700;
+}
+
 textarea {
-  min-height: 100px;
+  min-height: 90px;
   resize: vertical;
 }
 
 button {
+  width: 100%;
+  margin-top: 18px;
+  padding: 14px;
   border: none;
+  border-radius: 10px;
+  background: #ffd700;
+  color: #000;
+  font-size: 16px;
+  font-weight: 800;
   cursor: pointer;
 }
 
-.calculator-card button,
-.journal-card button {
-  width: 100%;
-  margin-top: 20px;
-  padding: 14px;
-  border-radius: 10px;
-  background: #ffd400;
-  color: #000;
-  font-size: 16px;
-  font-weight: bold;
+.results {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+  margin-top: 18px;
 }
 
 .result-box {
-  margin-top: 20px;
-  padding: 15px;
-  background: #0d0d0d;
+  background: #202020;
   border-radius: 12px;
+  padding: 14px;
+  text-align: center;
 }
 
-.result-box p {
+.result-box small {
+  display: block;
   color: #888;
-  margin-top: 8px;
+  font-size: 12px;
+  margin-bottom: 6px;
 }
 
 .result-box strong {
-  color: #ffd400;
-  font-size: 22px;
+  font-size: 20px;
+  color: #ffd700;
 }
 
-.trade-item {
-  margin-top: 15px;
-  background: #151515;
-  border: 1px solid #292929;
-  border-radius: 15px;
-  padding: 16px;
+.green {
+  color: #00d084 !important;
 }
 
-.trade-item strong {
-  color: #ffd400;
+.tradingview-widget-container {
+  border-radius: 12px;
+  overflow: hidden;
+  margin-bottom: 20px;
 }
 
-.analytics-card {
-  min-height: 180px;
+.info p {
+  color: #aaa;
+  font-size: 13px;
+  margin-bottom: 8px;
 }
 
 .progress {
-  height: 15px;
+  height: 14px;
   background: #292929;
   border-radius: 20px;
   overflow: hidden;
-  margin: 20px 0;
+  margin: 18px 0;
 }
 
 #winProgress {
   height: 100%;
   width: 0%;
-  background: #ffd400;
+  background: #ffd700;
   transition: 0.3s;
 }
 
-#analyticsText {
-  color: #aaa;
-  line-height: 1.6;
-}
-
+/* NAVIGATION */
 .bottom-nav {
   position: fixed;
   bottom: 0;
   left: 0;
   right: 0;
-  height: 78px;
+  height: 75px;
   background: #111;
   border-top: 1px solid #292929;
   display: flex;
@@ -231,8 +217,12 @@ button {
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 5px;
-  font-size: 20px;
+  gap: 4px;
+  font-size: 18px;
+  border: none;
+  margin-top: 0;
+  padding: 0;
+  width: auto;
 }
 
 .nav-btn span {
@@ -240,17 +230,5 @@ button {
 }
 
 .nav-btn.active {
-  color: #ffd400;
-}
-
-@media (min-width: 700px) {
-  main {
-    max-width: 800px;
-    margin: auto;
-  }
-
-  .bottom-nav {
-    max-width: 800px;
-    margin: auto;
-  }
+  color: #ffd700;
 }
