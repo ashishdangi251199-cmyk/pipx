@@ -35,7 +35,7 @@
         </div>
         <div class="stat-card">
           <div>Net P/L</div>
-          <strong id="netPL">$0</strong>
+          <strong id="netPL">₹0</strong>
         </div>
       </div>
     </section>
@@ -47,25 +47,32 @@
         <span class="live-dot">● LIVE</span>
       </div>
 
-      <!-- TradingView Live Ticker Tape Widget -->
+      <!-- TradingView Market List Widget (Static Table View) -->
       <div class="tradingview-widget-container">
         <div class="tradingview-widget-container__widget"></div>
-        <script type="text/javascript" src="https://s3.tradingview.com/external-embedding/embed-widget-ticker-tape.js" async>
+        <script type="text/javascript" src="https://s3.tradingview.com/external-embedding/embed-widget-market-quotes.js" async>
         {
-          "symbols": [
-            { "proName": "FX:EURUSD", "title": "EURUSD" },
-            { "proName": "FX:GBPUSD", "title": "GBPUSD" },
-            { "proName": "FX:USDJPY", "title": "USDJPY" },
-            { "proName": "FX:GBPJPY", "title": "GBPJPY" },
-            { "proName": "FX:AUDUSD", "title": "AUDUSD" },
-            { "proName": "OANDA:XAUUSD", "title": "GOLD" },
-            { "proName": "BITSTAMP:BTCUSD", "title": "BTCUSD" },
-            { "proName": "TVC:USOIL", "title": "USOIL" }
+          "width": "100%",
+          "height": "450",
+          "symbolsGroups": [
+            {
+              "name": "Live Pairs",
+              "originalName": "Live Pairs",
+              "symbols": [
+                { "name": "FX:EURUSD", "displayName": "EUR/USD" },
+                { "name": "FX:GBPUSD", "displayName": "GBP/USD" },
+                { "name": "FX:USDJPY", "displayName": "USD/JPY" },
+                { "name": "FX:GBPJPY", "displayName": "GBP/JPY" },
+                { "name": "FX:AUDUSD", "displayName": "AUD/USD" },
+                { "name": "OANDA:XAUUSD", "displayName": "GOLD" },
+                { "name": "BITSTAMP:BTCUSD", "displayName": "BTC/USD" },
+                { "name": "TVC:USOIL", "displayName": "US OIL" }
+              ]
+            }
           ],
           "showSymbolLogo": true,
-          "isTransparent": false,
-          "displayMode": "adaptive",
           "colorTheme": "dark",
+          "isTransparent": false,
           "locale": "en"
         }
         </script>
@@ -74,54 +81,35 @@
 
     <!-- CALCULATOR -->
     <section id="calculator" class="page">
-      <h1>🧮 Risk & Lot Calculator</h1>
+      <h1>🧮 Lot Size & Risk Calculator</h1>
 
       <div class="card">
-        <label for="pairSelect">Pair Type</label>
-        <select id="pairSelect" onchange="calculateRisk()">
-          <option value="forex">Standard Forex (EURUSD, GBPUSD, etc.)</option>
-          <option value="jpy">JPY Pairs (USDJPY, GBPJPY, etc.)</option>
-          <option value="gold">Gold / XAUUSD</option>
-        </select>
+        <label for="riskAmountInput">Risk Amount (₹ / $)</label>
+        <input id="riskAmountInput" type="number" step="any" placeholder="e.g. 500" oninput="calculateRisk()" />
 
-        <label for="entry">Entry Price</label>
-        <input id="entry" type="number" step="any" placeholder="e.g. 1.08500" oninput="calculateRisk()" />
+        <label for="slPipsInput">Stop Loss (Pips)</label>
+        <input id="slPipsInput" type="number" step="any" placeholder="e.g. 20" oninput="calculateRisk()" />
 
-        <label for="stop">Stop Loss Price</label>
-        <input id="stop" type="number" step="any" placeholder="e.g. 1.08200" oninput="calculateRisk()" />
-
-        <label for="risk">Risk Amount ($)</label>
-        <input id="risk" type="number" step="any" value="10" placeholder="10" oninput="calculateRisk()" />
-
-        <button onclick="calculateRisk()">CALCULATE</button>
+        <button onclick="calculateRisk()">CALCULATE LOT SIZE</button>
 
         <div class="results">
           <div class="result-box">
-            <small>SL Pips</small>
-            <strong id="pips">0</strong>
+            <small>Calculated Lot Size</small>
+            <strong id="lotSizeResult" class="green">0.00</strong>
           </div>
           <div class="result-box">
-            <small>Lot Size</small>
-            <strong id="lot">0.00</strong>
-          </div>
-          <div class="result-box">
-            <small>TP (1:3)</small>
-            <strong id="tp" class="green">0</strong>
-          </div>
-          <div class="result-box">
-            <small>Risk</small>
-            <strong id="riskShow">$0</strong>
+            <small>Risk / Pip</small>
+            <strong id="riskPerPipResult">0.00</strong>
           </div>
         </div>
       </div>
 
-      <!-- PIP RULES -->
+      <!-- PIP INFORMATION -->
       <div class="card info-card">
-        <h2>📌 Pip Rules</h2>
+        <h2>📌 Quick Formula</h2>
         <div class="info">
-          <p><b>Forex:</b> 1 pip = 0.00010</p>
-          <p><b>JPY pairs:</b> 1 pip = 0.01</p>
-          <p><b>Gold (XAUUSD):</b> 0.10 price movement = 1 pip</p>
+          <p><b>Lot Size Formula:</b> Risk Amount ÷ SL Pips</p>
+          <p><b>Example:</b> ₹500 Risk ÷ 20 Pips SL = <b>25 Lot Size</b></p>
         </div>
       </div>
     </section>
@@ -214,5 +202,4 @@
 
   <script src="app.js"></script>
 </body>
-        </html>
-        
+</html>
