@@ -3,155 +3,134 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta name="theme-color" content="#0b0b0b">
-
-  <title>PipX</title>
-
+  <meta name="theme-color" content="#090909">
+  <title>PipX - Trading Journal & Calculator</title>
   <link rel="stylesheet" href="style.css">
 </head>
-
 <body>
 
+  <!-- HEADER -->
   <header class="top-header">
     <div class="logo">Pip<span>X</span></div>
-    <div class="subtitle">Trading Journal & Risk Management</div>
+    <div class="subtitle">Trading Risk & Lot Size Calculator</div>
   </header>
 
   <main>
 
     <!-- DASHBOARD -->
     <section id="dashboard" class="page active">
-
       <h1>🏠 Dashboard</h1>
-
       <div class="stats-grid">
-
         <div class="stat-card">
           <div>Total Trades</div>
           <strong id="totalTrades">0</strong>
         </div>
-
         <div class="stat-card">
           <div>Win Rate</div>
           <strong id="winRate">0%</strong>
         </div>
-
         <div class="stat-card">
           <div>Total Pips</div>
           <strong id="totalPips">0</strong>
         </div>
-
         <div class="stat-card">
           <div>Net P/L</div>
-          <strong id="netPL">₹0</strong>
+          <strong id="netPL">$0</strong>
         </div>
-
       </div>
-
     </section>
-
 
     <!-- LIVE MARKET -->
     <section id="market" class="page">
-
-      <h1>📈 Live Market</h1>
-
-      <div class="market-box">
-
-        <div class="market-header">
-          <span>Forex & Markets</span>
-          <span class="live-dot">● LIVE</span>
-        </div>
-
-        <div id="marketList">
-
-          <div class="market-row">
-            <span>EURUSD</span>
-            <strong id="EURUSD">Loading...</strong>
-          </div>
-
-          <div class="market-row">
-            <span>GBPUSD</span>
-            <strong id="GBPUSD">Loading...</strong>
-          </div>
-
-          <div class="market-row">
-            <span>USDJPY</span>
-            <strong id="USDJPY">Loading...</strong>
-          </div>
-
-          <div class="market-row">
-            <span>AUDUSD</span>
-            <strong id="AUDUSD">Loading...</strong>
-          </div>
-
-          <div class="market-row">
-            <span>NZDUSD</span>
-            <strong id="NZDUSD">Loading...</strong>
-          </div>
-
-          <div class="market-row">
-            <span>GBPJPY</span>
-            <strong id="GBPJPY">Loading...</strong>
-          </div>
-
-          <div class="market-row">
-            <span>BTCUSD</span>
-            <strong id="BTCUSD">Loading...</strong>
-          </div>
-
-          <div class="market-row">
-            <span>GOLD</span>
-            <strong id="GOLD">Loading...</strong>
-          </div>
-
-        </div>
-
+      <div class="card-header">
+        <h1>📈 Live Market</h1>
+        <span class="live-dot">● LIVE</span>
       </div>
 
+      <!-- TradingView Live Ticker Tape Widget -->
+      <div class="tradingview-widget-container">
+        <div class="tradingview-widget-container__widget"></div>
+        <script type="text/javascript" src="https://s3.tradingview.com/external-embedding/embed-widget-ticker-tape.js" async>
+        {
+          "symbols": [
+            { "proName": "FX:EURUSD", "title": "EURUSD" },
+            { "proName": "FX:GBPUSD", "title": "GBPUSD" },
+            { "proName": "FX:USDJPY", "title": "USDJPY" },
+            { "proName": "FX:GBPJPY", "title": "GBPJPY" },
+            { "proName": "FX:AUDUSD", "title": "AUDUSD" },
+            { "proName": "OANDA:XAUUSD", "title": "GOLD" },
+            { "proName": "BITSTAMP:BTCUSD", "title": "BTCUSD" },
+            { "proName": "TVC:USOIL", "title": "USOIL" }
+          ],
+          "showSymbolLogo": true,
+          "isTransparent": false,
+          "displayMode": "adaptive",
+          "colorTheme": "dark",
+          "locale": "en"
+        }
+        </script>
+      </div>
     </section>
-
 
     <!-- CALCULATOR -->
     <section id="calculator" class="page">
+      <h1>🧮 Risk & Lot Calculator</h1>
 
-      <h1>🧮 Calculator</h1>
+      <div class="card">
+        <label for="pairSelect">Pair Type</label>
+        <select id="pairSelect" onchange="calculateRisk()">
+          <option value="forex">Standard Forex (EURUSD, GBPUSD, etc.)</option>
+          <option value="jpy">JPY Pairs (USDJPY, GBPJPY, etc.)</option>
+          <option value="gold">Gold / XAUUSD</option>
+        </select>
 
-      <div class="calculator-card">
+        <label for="entry">Entry Price</label>
+        <input id="entry" type="number" step="any" placeholder="e.g. 1.08500" oninput="calculateRisk()" />
 
-        <label>Account Balance</label>
-        <input id="balance" type="number" placeholder="₹100000">
+        <label for="stop">Stop Loss Price</label>
+        <input id="stop" type="number" step="any" placeholder="e.g. 1.08200" oninput="calculateRisk()" />
 
-        <label>Risk %</label>
-        <input id="riskPercent" type="number" placeholder="1">
+        <label for="risk">Risk Amount ($)</label>
+        <input id="risk" type="number" step="any" value="10" placeholder="10" oninput="calculateRisk()" />
 
-        <label>Stop Loss (Pips)</label>
-        <input id="stopLoss" type="number" placeholder="30">
+        <button onclick="calculateRisk()">CALCULATE</button>
 
-        <button onclick="calculateRisk()">Calculate</button>
-
-        <div class="result-box">
-
-          <p>Risk Amount</p>
-          <strong id="riskAmount">₹0</strong>
-
-          <p>Risk / Pip</p>
-          <strong id="riskPerPip">₹0</strong>
-
+        <div class="results">
+          <div class="result-box">
+            <small>SL Pips</small>
+            <strong id="pips">0</strong>
+          </div>
+          <div class="result-box">
+            <small>Lot Size</small>
+            <strong id="lot">0.00</strong>
+          </div>
+          <div class="result-box">
+            <small>TP (1:3)</small>
+            <strong id="tp" class="green">0</strong>
+          </div>
+          <div class="result-box">
+            <small>Risk</small>
+            <strong id="riskShow">$0</strong>
+          </div>
         </div>
-
       </div>
 
+      <!-- PIP RULES -->
+      <div class="card info-card">
+        <h2>📌 Pip Rules</h2>
+        <div class="info">
+          <p><b>Forex:</b> 1 pip = 0.00010</p>
+          <p><b>JPY pairs:</b> 1 pip = 0.01</p>
+          <p><b>Gold (XAUUSD):</b> 0.10 price movement = 1 pip</p>
+        </div>
+      </div>
     </section>
-
 
     <!-- JOURNAL -->
     <section id="journal" class="page">
-
       <h1>📓 Trading Journal</h1>
 
-      <div class="journal-card">
-
+      <div class="card">
         <label>Date</label>
         <input id="tradeDate" type="date">
 
@@ -160,11 +139,9 @@
           <option>EURUSD</option>
           <option>GBPUSD</option>
           <option>USDJPY</option>
-          <option>AUDUSD</option>
-          <option>NZDUSD</option>
           <option>GBPJPY</option>
-          <option>BTCUSD</option>
           <option>GOLD</option>
+          <option>BTCUSD</option>
         </select>
 
         <label>Direction</label>
@@ -174,13 +151,13 @@
         </select>
 
         <label>Entry Price</label>
-        <input id="entry" type="number" step="any">
+        <input id="journalEntry" type="number" step="any">
 
         <label>Stop Loss</label>
         <input id="sl" type="number" step="any">
 
         <label>Take Profit</label>
-        <input id="tp" type="number" step="any">
+        <input id="tpJournal" type="number" step="any">
 
         <label>Result</label>
         <select id="result">
@@ -190,77 +167,52 @@
         </select>
 
         <label>Pips</label>
-        <input id="pips" type="number" placeholder="10">
+        <input id="journalPips" type="number" placeholder="10">
 
         <label>Notes</label>
         <textarea id="notes" placeholder="Trade setup / mistake / observation"></textarea>
 
         <button onclick="saveTrade()">Save Trade</button>
-
       </div>
 
       <div id="tradeList"></div>
-
     </section>
-
 
     <!-- ANALYTICS -->
     <section id="analytics" class="page">
-
       <h1>📊 Analytics</h1>
 
-      <div class="analytics-card">
-
-        <p>Performance</p>
-
+      <div class="card">
+        <p>Performance Progress</p>
         <div class="progress">
           <div id="winProgress"></div>
         </div>
-
-        <p id="analyticsText">
-          No trades recorded yet.
-        </p>
-
+        <p id="analyticsText">No trades recorded yet.</p>
       </div>
-
     </section>
 
   </main>
 
-
   <!-- BOTTOM NAVIGATION -->
-
   <nav class="bottom-nav">
-
     <button onclick="showPage('dashboard')" class="nav-btn active">
-      🏠
-      <span>Dashboard</span>
+      🏠 <span>Dashboard</span>
     </button>
-
     <button onclick="showPage('market')" class="nav-btn">
-      📈
-      <span>Market</span>
+      📈 <span>Market</span>
     </button>
-
     <button onclick="showPage('calculator')" class="nav-btn">
-      🧮
-      <span>Calculator</span>
+      🧮 <span>Calculator</span>
     </button>
-
     <button onclick="showPage('journal')" class="nav-btn">
-      📓
-      <span>Journal</span>
+      📓 <span>Journal</span>
     </button>
-
     <button onclick="showPage('analytics')" class="nav-btn">
-      📊
-      <span>Analytics</span>
+      📊 <span>Analytics</span>
     </button>
-
   </nav>
 
-
   <script src="app.js"></script>
-
 </body>
-</html>
+        </html>
+        
