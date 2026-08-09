@@ -4,15 +4,15 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta name="theme-color" content="#090909">
-  <title>PipX - Trading Journal & Calculator</title>
+  <title>PipX Pro - Trading Journal & Custom Calculator</title>
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
 
   <!-- HEADER -->
   <header class="top-header">
-    <div class="logo">Pip<span>X</span></div>
-    <div class="subtitle">Trading Risk & Lot Size Calculator</div>
+    <div class="logo">Pip<span>X</span> Pro</div>
+    <div class="subtitle">Journal & Custom Lot Calculator</div>
   </header>
 
   <main>
@@ -35,81 +35,31 @@
         </div>
         <div class="stat-card">
           <div>Net P/L</div>
-          <strong id="netPL">₹0</strong>
+          <strong id="netPL">$0</strong>
         </div>
-      </div>
-    </section>
-
-    <!-- LIVE MARKET -->
-    <section id="market" class="page">
-      <div class="card-header">
-        <h1>📈 Live Market</h1>
-        <span class="live-dot">● LIVE</span>
-      </div>
-
-      <!-- TradingView Market List Widget (Static Table View) -->
-      <div class="tradingview-widget-container">
-        <div class="tradingview-widget-container__widget"></div>
-        <script type="text/javascript" src="https://s3.tradingview.com/external-embedding/embed-widget-market-quotes.js" async>
-        {
-          "width": "100%",
-          "height": "450",
-          "symbolsGroups": [
-            {
-              "name": "Live Pairs",
-              "originalName": "Live Pairs",
-              "symbols": [
-                { "name": "FX:EURUSD", "displayName": "EUR/USD" },
-                { "name": "FX:GBPUSD", "displayName": "GBP/USD" },
-                { "name": "FX:USDJPY", "displayName": "USD/JPY" },
-                { "name": "FX:GBPJPY", "displayName": "GBP/JPY" },
-                { "name": "FX:AUDUSD", "displayName": "AUD/USD" },
-                { "name": "OANDA:XAUUSD", "displayName": "GOLD" },
-                { "name": "BITSTAMP:BTCUSD", "displayName": "BTC/USD" },
-                { "name": "TVC:USOIL", "displayName": "US OIL" }
-              ]
-            }
-          ],
-          "showSymbolLogo": true,
-          "colorTheme": "dark",
-          "isTransparent": false,
-          "locale": "en"
-        }
-        </script>
       </div>
     </section>
 
     <!-- CALCULATOR -->
     <section id="calculator" class="page">
-      <h1>🧮 Lot Size & Risk Calculator</h1>
+      <h1>🧮 Lot Size Calculator</h1>
+      <div class="calculator-card">
+        <div class="input-group">
+          <label>Risk Amount ($)</label>
+          <input id="calcRisk" type="number" placeholder="e.g. 60" value="60" oninput="calculateCustomLotSize()">
+        </div>
+        <div class="input-group">
+          <label>Stop Loss (Pips)</label>
+          <input id="calcSL" type="number" placeholder="e.g. 10" value="10" oninput="calculateCustomLotSize()">
+        </div>
+        <button onclick="calculateCustomLotSize()">CALCULATE</button>
 
-      <div class="card">
-        <label for="riskAmountInput">Risk Amount (₹ / $)</label>
-        <input id="riskAmountInput" type="number" step="any" placeholder="e.g. 500" oninput="calculateRisk()" />
-
-        <label for="slPipsInput">Stop Loss (Pips)</label>
-        <input id="slPipsInput" type="number" step="any" placeholder="e.g. 20" oninput="calculateRisk()" />
-
-        <button onclick="calculateRisk()">CALCULATE LOT SIZE</button>
-
-        <div class="results">
-          <div class="result-box">
-            <small>Calculated Lot Size</small>
+        <div class="result-box">
+          <div class="result-item">
+            <p>Calculated Lot Size</p>
             <strong id="lotSizeResult" class="green">0.00</strong>
           </div>
-          <div class="result-box">
-            <small>Risk / Pip</small>
-            <strong id="riskPerPipResult">0.00</strong>
-          </div>
-        </div>
-      </div>
-
-      <!-- PIP INFORMATION -->
-      <div class="card info-card">
-        <h2>📌 Quick Formula</h2>
-        <div class="info">
-          <p><b>Lot Size Formula:</b> Risk Amount ÷ SL Pips</p>
-          <p><b>Example:</b> ₹500 Risk ÷ 20 Pips SL = <b>25 Lot Size</b></p>
+          <p class="formula-info">Formula: (Risk ÷ SL) ÷ 10</p>
         </div>
       </div>
     </section>
@@ -118,64 +68,108 @@
     <section id="journal" class="page">
       <h1>📓 Trading Journal</h1>
 
-      <div class="card">
-        <label>Date</label>
-        <input id="tradeDate" type="date">
+      <!-- Journal Entry Form Card -->
+      <div class="journal-card form-card">
+        <h2 id="formTitle">Add New Trade</h2>
+        
+        <div class="grid-inputs">
+          <div class="input-group">
+            <label>Date</label>
+            <input id="tradeDate" type="date">
+          </div>
+          <div class="input-group">
+            <label>Pair</label>
+            <select id="tradePair">
+              <!-- Screenshot Watchlist -->
+              <option value="USOILSPOT">USOILSPOT (WTI Oil)</option>
+              <option value="GBPUSD">GBPUSD</option>
+              <option value="EURUSD">EURUSD</option>
+              <option value="GBPJPY">GBPJPY</option>
+              <option value="AUDUSD">AUDUSD</option>
+              <option value="USDJPY">USDJPY</option>
+              <option value="NZDUSD">NZDUSD</option>
+              <option value="BTCUSD">BTCUSD</option>
+              <option value="GOLD">GOLD</option>
+            </select>
+          </div>
+        </div>
 
-        <label>Pair</label>
-        <select id="tradePair">
-          <option>EURUSD</option>
-          <option>GBPUSD</option>
-          <option>USDJPY</option>
-          <option>GBPJPY</option>
-          <option>GOLD</option>
-          <option>BTCUSD</option>
-        </select>
+        <div class="grid-inputs">
+          <div class="input-group">
+            <label>Direction</label>
+            <select id="direction">
+              <option>BUY</option>
+              <option>SELL</option>
+            </select>
+          </div>
+          <div class="input-group">
+            <label>Setup / Strategy</label>
+            <input id="setupStrategy" type="text" placeholder="e.g. Breakout, SMC">
+          </div>
+        </div>
 
-        <label>Direction</label>
-        <select id="direction">
-          <option>BUY</option>
-          <option>SELL</option>
-        </select>
+        <div class="grid-inputs">
+          <div class="input-group">
+            <label>Entry Price</label>
+            <input id="entryPrice" type="number" step="any" placeholder="1.0850">
+          </div>
+          <div class="input-group">
+            <label>Risk Amount ($)</label>
+            <input id="journalRisk" type="number" step="any" placeholder="60">
+          </div>
+        </div>
 
-        <label>Entry Price</label>
-        <input id="journalEntry" type="number" step="any">
+        <div class="grid-inputs">
+          <div class="input-group">
+            <label>Pips (+/-)</label>
+            <input id="journalPips" type="number" placeholder="20">
+          </div>
+          <div class="input-group">
+            <label>Result</label>
+            <select id="result">
+              <option>WIN</option>
+              <option>LOSS</option>
+              <option>BREAKEVEN</option>
+            </select>
+          </div>
+        </div>
 
-        <label>Stop Loss</label>
-        <input id="sl" type="number" step="any">
+        <div class="input-group">
+          <label>Screenshot / Chart Link</label>
+          <input id="screenshotUrl" type="url" placeholder="TradingView link or image URL">
+        </div>
 
-        <label>Take Profit</label>
-        <input id="tpJournal" type="number" step="any">
+        <div class="input-group">
+          <label>Notes</label>
+          <textarea id="notes" placeholder="Observations, mistakes, emotions..."></textarea>
+        </div>
 
-        <label>Result</label>
-        <select id="result">
-          <option>WIN</option>
-          <option>LOSS</option>
-          <option>BREAKEVEN</option>
-        </select>
-
-        <label>Pips</label>
-        <input id="journalPips" type="number" placeholder="10">
-
-        <label>Notes</label>
-        <textarea id="notes" placeholder="Trade setup / mistake / observation"></textarea>
-
-        <button onclick="saveTrade()">Save Trade</button>
+        <div class="form-actions btn-group">
+          <button id="saveBtn" onclick="saveTrade()">Save Trade</button>
+          <button id="cancelEditBtn" class="cancel-btn" onclick="cancelEdit()" style="display:none;">Cancel Edit</button>
+        </div>
       </div>
 
-      <div id="tradeList"></div>
-    </section>
-
-    <!-- ANALYTICS -->
-    <section id="analytics" class="page">
-      <h1>📊 Analytics</h1>
-
-      <div class="card">
-        <p>Performance Progress</p>
-        <div class="progress">
-          <div id="winProgress"></div>
+      <!-- Trade History, Search & Export Section -->
+      <div class="history-section">
+        <div class="history-header">
+          <h2>📜 History</h2>
+          <button class="export-btn" onclick="exportCSV()">📥 Export CSV</button>
         </div>
-        <p id="analyticsText">No trades recorded yet.</p>
+
+        <div class="filter-box">
+          <input id="searchPair" type="text" placeholder="🔍 Search Pair (e.g. GOLD)" oninput="renderTrades()">
+          <select id="filterResult" onchange="renderTrades()">
+            <option value="ALL">All</option>
+            <option value="WIN">WIN</option>
+            <option value="LOSS">LOSS</option>
+            <option value="BREAKEVEN">Breakeven</option>
+          </select>
+        </div>
+
+        <div id="tradeList" class="trade-list-container">
+          <!-- Trades will appear here -->
+        </div>
       </div>
     </section>
 
@@ -186,17 +180,11 @@
     <button onclick="showPage('dashboard')" class="nav-btn active">
       🏠 <span>Dashboard</span>
     </button>
-    <button onclick="showPage('market')" class="nav-btn">
-      📈 <span>Market</span>
-    </button>
     <button onclick="showPage('calculator')" class="nav-btn">
       🧮 <span>Calculator</span>
     </button>
     <button onclick="showPage('journal')" class="nav-btn">
       📓 <span>Journal</span>
-    </button>
-    <button onclick="showPage('analytics')" class="nav-btn">
-      📊 <span>Analytics</span>
     </button>
   </nav>
 
